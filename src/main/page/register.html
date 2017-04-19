@@ -1,0 +1,140 @@
+<!doctype html>
+<html id="ng-app" ng-app="prmView" xmlns:ng="http://angularjs.org">
+<head>
+    <meta charset="UTF-8">
+    <title>PRM-注册</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/prm.css">
+    <script src="js/requirejs/require.js"></script>
+    <script>
+        require.config({
+            baseUrl: "../page/",
+            paths: {
+                "alert": "tools/alert/alert",
+                "global": "tools/global/global",
+                "common": "js/common.js"
+            }
+        });
+    </script>
+    <script src="js/angular/angular.js"></script>
+    <script src="js/angular/angularMD5.js"></script>
+    <script src="js/JSON-js-master/json2.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/register.js"></script>
+    <!--[if lte IE 8]>
+    <script>
+        document.createElement('ng-include');
+        document.createElement('ng-pluralize');
+        document.createElement('ng-view');
+
+
+        // Optionally these for CSS
+        document.createElement('ng:include');
+        document.createElement('ng:pluralize');
+        document.createElement('ng:view');
+    </script>
+    <![endif]-->
+</head>
+<body class="register" ng-controller="formPost">
+<div class="wrapper" ng-click="hideLD()">
+    <div class="top">
+        <h1 class="page-title">农资预售管理系统</h1>
+    </div>
+    <div class="main main-bg1">
+        <div class="register-box border-box">
+            <h2 class="register-box-title">注册</h2>
+            <form class="prm-form register-form" name="regForm" novalidate>
+            	
+                <div ng-class="{'prm-form-group':true,'success':regForm.user.$error.censorMobile==false && regForm.user.$error.mobileNumber==false,'danger':user.length>=11 && (regForm.user.$error.censorMobile == true || regForm.user.$error.mobileNumber == true)}">
+                    <label class="form-group-label text-right" for="user">手机号码：</label>
+                    <div class="form-group-content">
+                        <input class="prm-form-control" type="text" id="user" name="user" placeholder="请输入手机号码" ng-model="user" mobile-number censor-mobile required>
+                    </div>
+                    <div ng-class="{'inputstatue':true,'hidden': regForm.user.$error.censorMobile == false}"><span>该手机号已被注册！</span></div>
+                    <div ng-class="{'inputstatue':true,'hidden': regForm.user.$error.mobileNumber == false}"><span>手机格式不正确！</span></div>
+                    <div ng-class="{'inputstatue':true,'hidden': !(regForm.user.$error.mobileNumber == false && regForm.user.$error.censorMobile == false)}"><span></span></div>
+                </div>
+                
+                <div ng-class="{'prm-form-group': true,danger: regForm.npwd.$dirty && regForm.npwd.$error.required}">
+                    <label class="form-group-label text-right" for="npwd">输入密码：</label>
+                    <div class="form-group-content">
+                        <input class="prm-form-control" type="password" id="npwd" name="npwd" placeholder="设置登录密码" ng-blur="checkPwd1()" ng-model="npwd" required>
+                    </div>
+                    <div class="inputstatue"><span>请输入密码</span></div>
+                </div>
+                
+                <div  ng-init="a=true" ng-class="{'prm-form-group':a,danger: isDanger,success: isSucc}">
+                    <label class="form-group-label text-right" for="opwd">确认密码：</label>
+                    <div class="form-group-content">
+                        <input class="prm-form-control" type="password" id="opwd" name="opwd" placeholder="重新输入密码" ng-model="opwd" ng-blur="checkPwd2()" required>
+                    </div>
+                    <div ng-class="{'inputstatue':true,'show':isDanger}"><span>请确认密码</span></div>
+                </div>
+                
+                <div ng-init="a=true" ng-class="{'prm-form-group':a,danger: regForm.code.$dirty && regForm.code.$error.required,success:regForm.code.$dirty && !regForm.code.$error.required}">
+                    <label class="form-group-label text-right" for="code">验证码：</label>
+                    <div class="form-group-content clearfix">
+                        <input class="codeinput prm-fl" type="text" id="code" name="code" placeholder="输入手机短信验证码" ng-model="code" required>
+                        <input type="button" class="codeimg btn" id="codeBtn" ng-click="getCode()" ng-bind-html="secTime" value="{{getcodebtntext}}" ng-disabled="!regForm.user.$valid" />
+                    </div>
+                    <div class="inputstatue"><span>请输入验证码</span></div>
+                </div>
+                
+                
+                <div  ng-init="a=true" ng-class="{'prm-form-group':a,danger: regForm.rname.length>0 && regForm.rname.$dirty && regForm.rname.$error.chinese,success:regForm.rname.$dirty && !regForm.rname.$error.chinese}">
+                    <label class="form-group-label text-right" for="rname">真实姓名：</label>
+                    <div class="form-group-content">
+                        <input class="prm-form-control" type="text" id="rname" name="rname" placeholder="输入您的真实姓名" ng-model="rname" chinese required>
+                    </div>
+                    <div class="inputstatue"><span>姓名只能是中文！</span></div>
+                </div>
+
+                <div ng-class="{'prm-form-group':a,danger:(personId.length==15 || personId.length>=18) && (regForm.personId.$error.censorPersonid == true || regForm.personId.$error.personid == true),success:regForm.personId.$error.personid == false && regForm.personId.$error.censorPersonid == false}">
+                    <label class="form-group-label text-right" for="personId">身份证：</label>
+                    <div class="form-group-content">
+                        <input class="prm-form-control" type="text" id="personId" name="personId" placeholder="输入您的身份证号" ng-model="personId" personid censor-personid required>
+                    </div>
+                    <div ng-class="{'inputstatue':true,'hidden':regForm.personId.$error.personid == false}"><span>身份证格式不正确！</span></div>
+                    <div ng-class="{'inputstatue':true,'hidden':regForm.personId.$error.censorPersonid == false}"><span>该身份证已经被注册！</span></div>
+                    <div ng-class="{'inputstatue':true,'hidden':!(regForm.personId.$error.personid == false && regForm.personId.$error.censorPersonid == false)}"><span></span></div>
+                </div>
+
+                <div class="prm-form-group">
+                    <label class="form-group-label text-right">区域：</label>
+                    <div class="form-group-content">
+                    	<div ng-class="{'choiceBox':true,'show':isShowPro}">
+                    		<input type="hidden" id="inputPro" name="inputPro" ng-model="inputPro" required/>
+	                        <div class="province" id="province" ng-click="toggleProvince($event)">{{inputPro||"省"}}</div>
+	                        <ul class="choiceBoxUl" ng-show="isShowPro">
+	                        	<li ng-click="choicePro(x.id,x.name)" ng-repeat="x in provinceJson">{{x.name}}</li>
+	                        </ul>
+                        </div>
+                        
+                        <div ng-class="{'choiceBox':true,'ml11':true,'show':isShowCity}">
+                        	<input type="hidden" id="inputCity" name="inputCity" ng-model="inputCity" required/>
+                        	<div class="city" id="city" ng-click="toggleCity($event)">{{inputCity||"市"}}</div>
+                        	<ul class="choiceBoxUl" ng-show="isShowCity">
+	                        	<li ng-click="choiceCity(x.name)" ng-repeat="x in cityJson">{{x.name}}</li>
+	                        </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div ng-init="a=true" ng-class="{'prm-form-group':a,danger: (regForm.area.$dirty && regForm.area.$error.required) && isChoicePC,success:(regForm.area.$dirty && !regForm.area.$error.required) && isChoicePC}">
+                    <div class="form-group-content">
+                        <input class="prm-form-control" type="text" id="area" name="area" placeholder="输入乡镇地址" ng-model="area" required>
+                    </div>
+                    <div class="inputstatue"><span>区域选择、输入不能为空</span></div>
+                </div>
+                <div class="prm-form-group">
+                    <div class="form-group-content submitbtn-box">
+                        <input type="button" class="prm-form-control btn prm-fl confirmbtn" value="注册" ng-click="submitReg()" ng-disabled="!regForm.$valid" />
+                        <a href="jxs" class="prm-form-control btn prm-fr canclebtn">取消</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

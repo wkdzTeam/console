@@ -1,0 +1,99 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-3.2.xsd 
+		http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd 
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-3.2.xsd 
+		http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop-3.2.xsd 
+		http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx-3.2.xsd ">
+
+<!-- web.xml中shiro的filter对应的bean -->
+<!-- Shiro 的Web过滤器 -->
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager" />
+		<property name="loginUrl" value="/auth/login" />
+		<!-- 自定义filter配置 -->
+		<property name="filters">
+			<map>
+				<!-- 将自定义 的FormAuthenticationFilter注入shiroFilter中-->
+				<entry key="authc" value-ref="formAuthenticationFilter" />
+			</map>
+		</property>
+		
+		<property name="filterChainDefinitions">
+			<value>
+				<!-- 对静态资源设置匿名访问 -->
+				/page/** = anon
+				/error/error = anon
+				/login/getVerifiyCode = anon
+				/login/checkVerifiyCode = anon
+				/auth/register = anon
+				/auth/isLogin = anon
+				/auth/loginOut = anon
+				/auth/isExistUsername = anon
+				/auth/changePwd=anon
+				/auth/isExistUser=anon
+				/sms/sendMsg=anon
+				/register/reg=anon
+				/register/checkUserIsExist=anon
+				/register/findPwd=anon
+				/** = authc
+			</value>
+		</property>
+	</bean>
+
+<!-- securityManager安全管理器 -->
+<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realm" ref="customRealm" />
+		<!-- 注入session管理器 -->
+		<property name="sessionManager" ref="sessionManager" />
+		<!-- 记住我 -->
+		<property name="rememberMeManager" ref="rememberMeManager"/>
+		
+	</bean>
+
+<!-- realm -->
+<bean id="customRealm" class="com.tv.manage.CustomRealm">
+	<!-- 将凭证匹配器设置到realm中，realm按照凭证匹配器的要求进行散列 -->
+</bean>
+
+<!-- 会话管理器 -->
+    <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+        <!-- session的失效时长，单位毫秒 -->
+        <property name="globalSessionTimeout" value="1800000"/>
+        <!-- 删除失效的session -->
+        <property name="deleteInvalidSessions" value="true"/>
+    </bean>
+
+<!-- 自定义form认证过虑器 -->
+<!-- 基于Form表单的身份验证过滤器，不配置将也会注册此过虑器，表单中的用户账号、密码及loginurl将采用默认值，建议配置 -->
+	<bean id="formAuthenticationFilter" 
+	class="com.tv.manage.CustomFormAuthenticationFilter ">
+		<!-- 表单中账号的input名称 -->
+		<property name="usernameParam" value="username" />
+		<!-- 表单中密码的input名称 -->
+		<property name="passwordParam" value="password" />
+		<!-- 记住我input的名称 -->
+		<property name="rememberMeParam" value="rememberMe"/>
+ </bean>
+
+<!-- rememberMeManager管理器，写cookie，取出cookie生成用户信息 -->
+	<bean id="rememberMeManager" class="org.apache.shiro.web.mgt.CookieRememberMeManager">
+		<property name="cookie" ref="rememberMeCookie" />
+	</bean>
+	<!-- 记住我cookie -->
+	<bean id="rememberMeCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+		<!-- rememberMe是cookie的名字 -->
+		<constructor-arg value="rememberMe" />
+		<!-- 记住我cookie生效时间30天 -->
+		<property name="maxAge" value="2592000" />
+	</bean>
+
+
+</beans>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tv.mapper.ActPefRoleMapper" >
+  <resultMap id="PermissionMap" type="com.tv.entity.ActPefRole" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="perf_id" property="perfId" jdbcType="INTEGER" />
+    <result column="role_id" property="roleId" jdbcType="INTEGER" />
+    <result column="tsp" property="tsp" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <select id="findById" resultMap="PermissionMap" parameterType="java.lang.Integer" >
+	select id,perf_id,role_id,tsp from act_perf_role where id=#{id}
+  </select>
+  
+  <select id="findByCondition" resultMap="PermissionMap" parameterType="java.util.Map" >
+	select id,perf_id,role_id,tsp from act_perf_role where 1=1
+	<if test="perfId>0">
+		and perf_id=#{perfId}
+	</if>
+	<if test="roleId>0">
+		and role_id=#{roleId}
+	</if>
+	
+  </select>
+  
+  
+  <insert id="insert" parameterType="com.tv.entity.ActPefRole" useGeneratedKeys="true" keyProperty="id">
+    insert into act_perf_role (id,perf_id,role_id,tsp from act_perf_role)
+    values (#{id}, #{perfId}, #{roleId},  #{tsp})
+  </insert>
+  
+  
+   <insert id="insertBatchRef"  parameterType="java.util.List">
+   insert into act_perf_role (id,perf_id,role_id,tsp )
+   values  
+   <foreach collection="list" item="item" index="index" separator=",">
+   	(#{id}, #{perfId}, #{roleId},  #{tsp})
+   </foreach>
+  </insert>
+  
+  
+  
+  <delete id="deleteByPKId" parameterType="java.lang.Integer">
+  	delete from act_perf_role where id = #{id}
+  </delete>
+</mapper>

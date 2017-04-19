@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tv.mapper.ActRoleMapper" >
+<resultMap id="RoleMap" type="com.tv.entity.ActRole" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="tsp" property="tsp" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Column_List" >
+    id, name, tsp
+  </sql>
+  
+  <select id="findRoleById" resultMap="RoleMap" parameterType="java.lang.Integer">
+  select 
+    <include refid="Column_List" />
+    from act_role
+    where id = #{id}
+  </select>
+  
+  <delete id="deleteRoleById" parameterType="java.lang.Integer" >
+    delete from act_role
+    where id = #{id}
+  </delete>
+  
+  <insert id="insertRole" parameterType="com.tv.entity.ActRole" useGeneratedKeys="true" keyProperty="id">
+    insert into act_role (id, name,tsp)
+    values (#{id}, #{name},#{tsp})
+  </insert>
+  
+  <update id="updateRole" parameterType="com.tv.entity.ActRole" >
+    update act_role
+    set name = #{name},
+      tsp = #{tsp}
+    where id = #{id}
+  </update>
+  
+  <select id="findAllRole" resultMap="RoleMap">
+  	SELECT * FROM act_role
+  </select>
+  
+  <select id="findRoleTotalCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+  	select count(id) from act_role
+  </select>
+</mapper>

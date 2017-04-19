@@ -1,0 +1,150 @@
+<div class="sale box">
+    <div class="mainBody-title">{{name}}</div>
+    <div class="mainBody-content">
+        <div class="search-customer">
+        	<div class="search-customer-group">
+                <label class="text-right">客户姓名</label>
+                <div class="search-customer-content">
+                    <div class="customersearchbox" search-customer customer="searchbox" searchtype="my"></div>
+                </div>
+            </div>
+            <div ng-class="{'search-customer-phone':true,'ml20':true,'hidden':!searchbox.mobile}">
+				手机号：
+				<span class="phone">{{searchbox.mobile}}</span>
+			</div>
+            <div ng-class="{'search-customer-phone':true,'ml20':true,'hidden': searchbox.mobile !== null || searchbox.mobile === undefined }">
+				<span class="pColorff4949">数据库中查不到该用户！！</span>
+			</div>
+            <div class="search-customer-btn">
+				<input type="button" class="btn prm-fl templatebtn bl-width" value="查询" ng-click="searchClick()" />
+			</div>
+        </div>
+        
+        <div class="pre-table table-public">
+        	<table class="table">
+        		<thead>
+        			<tr>
+        				<th>序列号</th>
+        				<th>时间</th>
+        				<th>客户姓名</th>
+        				<th>联系手机号</th>
+        				<th>地址</th>
+        				<th colspan="2">操作</th>
+        			</tr>
+        		</thead>
+        		<tbody>
+        			<tr ng-repeat="tr in table.table">
+        				<td>{{$index+1}}</td>
+        				<td>{{toData(tr.tsp)}}</td>
+        				<td>{{tr.realName}}</td>
+        				<td>{{tr.mobile}}</td>
+        				<td>{{returnAddress(tr.area,2)}}</td>
+        				<td><a href="javascript:void(0)" ng-class="tr.modifiedAble?'table-update-color':'table-unClick-color'" ng-click="tr.modifiedAble?customer.showAlert(0,tr):return;">修改</a></td>
+        				<td><a href="javascript:void(0)" class="table-del-color" ng-click="table.delitem(tr)">删除</a></td>
+        			</tr>
+        		</tbody>
+        	</table>
+        	<div class="table-public-paging">
+        		<div class="paging-btn">
+        			<a href="javascript:void(0)" ng-click="table.firstpage()">首页</a>
+        			<a href="javascript:void(0)" ng-click="table.prepage()">上一页</a>
+        			<a href="javascript:void(0)" ng-click="table.nextpage()">下一页</a>
+        			<a href="javascript:void(0)" ng-click="table.lastpage()">尾页</a>
+        		</div>
+        	</div>
+        	<p class="table-public-tips">温馨提示：在新增信息2小时内有修改机会，如果超过2小时不能修改！<span class="tips-icon"></span></p>
+        </div>
+        
+        <div class="btn-group-height">
+            <div class="templatebtn-position">
+                <input type="button" class="btn templatebtn plr10" value="增加客户信息" ng-click="customer.showAlert(1)"/>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="prm-zhezhao" ng-class="{'show':!customer.hidden}"></div>
+<div id="prmAlert006" ng-class="{'prmAlert':true,'hidden':customer.hidden}">
+	<div class="hd">
+		<h4>{{prmAlertTitle}}</h4>
+		<span class="close" ng-click="customer.closeCustomer()">×</span>
+	</div>
+	<div class="box">
+		<form class="prm-form foundPwd-form wd600" name="cutomerform" novalidate>
+			<div class="foundPwdPop addcutomerform">
+				<div class="prm-form-group">
+					<label class="form-group-label text-right">真实姓名：</label>
+					<div class="form-group-content">
+						<div class="customersearchbox" search-customer customer="alert" searchtype="all" closeenter="true"></div>
+					</div>
+				</div>
+				
+				<div ng-class="{'prm-form-group':true,'success': cutomerform.mobile.$error.censorMobile==false && cutomerform.mobile.$error.mobileNumber==false,'danger': alert.mobile.length>=11 && (cutomerform.mobile.$error.censorMobile == true || cutomerform.mobile.$error.mobileNumber == true)}">
+					<label class="form-group-label text-right" for="mobile">手机号码：</label>
+					<div class="form-group-content">
+						<input class="prm-form-control" type="text" id="mobile" name="mobile" placeholder="请输入手机号码" ng-model="alert.mobile" ng-readonly="isread" mobile-number censor-mobile="manually" required />
+						<p ng-class="{'pColorff4949 prmtip mp0':true,'hidden': !(popTips && !alert.id)}">{{popTipsHtml}}</p>
+					</div>
+					<div ng-class="{'inputstatue':true,'hidden': cutomerform.mobile.$error.mobileNumber == false}"><span>手机格式不正确！</span></div>
+					<div ng-class="{'inputstatue':true,'hidden': cutomerform.mobile.$error.censorMobile == false}"><span>该手机号已被使用！</span></div>
+					<div ng-class="{'inputstatue':true,'hidden': !(cutomerform.mobile.$error.censorMobile==false && cutomerform.mobile.$error.mobileNumber==false)}"><span></span></div>
+				</div>
+
+				<div ng-class="{'prm-form-group':true,'danger':(alert.idcardno.length==15 || alert.idcardno.length>=18) && (cutomerform.personId.$error.personid == true || cutomerform.personId.$error.censorPersonid == true),'success':cutomerform.personId.$error.personid == false && cutomerform.personId.$error.censorPersonid == false}">
+                    <label class="form-group-label text-right" for="personId">身份证：</label>
+                    <div class="form-group-content">
+                        <input class="prm-form-control" type="text" id="personId" name="personId" placeholder="输入您的身份证号" ng-model="alert.idcardno" ng-readonly="isread" personid censor-personid="manually" required />
+                    </div>
+					<div ng-class="{'inputstatue':true,'hidden':cutomerform.personId.$error.personid == false}"><span>身份证格式不正确！</span></div>
+					<div ng-class="{'inputstatue':true,'hidden':cutomerform.personId.$error.censorPersonid == false}"><span>该身份证已经被注册！</span></div>
+					<div ng-class="{'inputstatue':true,'hidden':!(cutomerform.personId.$error.personid == false && cutomerform.personId.$error.censorPersonid == false)}"><span></span></div>
+                </div>
+
+                <div class="prm-form-group">
+                    <label class="form-group-label text-right">类型：</label>
+                    <div class="form-group-content">
+                        <select class="prm-form-control" id="type" name="type" ng-model="alert.type" ng-disabled="isread" required style="height: 36px;">
+                        	<option value="0" selected="selected">请选择</option>
+                        	<option value="2" ng-show="islsd">零售店</option>
+                        	<option value="3">种植户</option>
+                        	<option value="4" ng-show="isnh">农户</option>
+                      	</select>	
+                    </div>
+                    <div class="inputstatue"><span></span></div>
+                </div>
+                
+                <div class="prm-form-group">
+                    <label class="form-group-label text-right">区域：</label>
+                    <div class="form-group-content">
+                    	<div ng-class="{'choiceBox':true,'show':isShowPro}">
+                    		<input type="hidden" id="inputPro" name="inputPro" ng-model="alert.province" required/>
+	                        <div class="province fca9" id="province" ng-click="toggleProvince()">{{alert.province||"省"}}</div>
+	                        <ul class="choiceBoxUl" ng-show="(isShowPro && cusShow)">
+	                        	<li ng-click="choicePro(x.id,x.name)" ng-repeat="x in provinceJson">{{x.name}}</li>
+	                        </ul>
+                        </div>
+                        
+                        <div ng-class="{'choiceBox':true,'ml11':true,'show':isShowCity}">
+                        	<input type="hidden" id="inputCity" name="inputCity" ng-model="alert.city" required/>
+                        	<div class="city fca9" id="city" ng-click="toggleCity()">{{alert.city||"市"}}</div>
+                        	<ul class="choiceBoxUl" ng-show="(isShowCity && cusShow)">
+	                        	<li ng-click="choiceCity(x.name)" ng-repeat="x in cityJson">{{x.name}}</li>
+	                        </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="prm-form-group">
+                    <div class="form-group-content">
+                        <input class="prm-form-control" type="text" id="area" name="area" placeholder="输入乡镇地址" ng-model="alert.area" ng-readonly="isread" required>
+                    </div>
+                    <div class="inputstatue"><span>区域选择、输入不能为空</span></div>
+                </div>
+			</div>
+			<div class="fd">
+				<input type="button" href="javascript:;" class="btn btn-confirm" value="提交" ng-click="customer.submit()" ng-disabled="!cutomerform.$valid"/>
+				<input type="button" href="javascript:;" class="btn btn-cancel" value="取消" ng-click="customer.closeCustomer()">
+			</div>
+		</form>
+	</div>
+</div>

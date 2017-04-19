@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tv.mapper.ActUserMapper" >
+  <resultMap id="userResult" type="com.tv.entity.ActUser" >
+    <id property="id" column="id" jdbcType="INTEGER" />
+    <result property="userName" column="user_name" jdbcType="VARCHAR" />
+    <result property="pwd" column="pwd" jdbcType="VARCHAR" />
+    <result property="phone" column="real_name" jdbcType="VARCHAR" />
+    <result property="role" column="role"  />
+    <result property="channel" column="channel"  />
+    <result property="tsp" column="tsp" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <select id="findSysUserByUsername" resultMap="userResult" parameterType="java.lang.String">
+   	select id,user_name,pwd,phone,role,channel,tsp from act_user where user_name = #{_parameter}
+  </select>
+  
+  
+  <select id="getAllManageUser" resultMap="userResult" parameterType="java.util.Map">
+  	SELECT * FROM act_user 
+  	<if test="rows !=null &amp; page !=null">
+  	LIMIT #{page}, #{rows}
+  	</if>
+  </select>
+  
+  <select id="getUserTotalCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+  	SELECT COUNT(1) FROM act_user 
+  </select>
+  
+  <select id="getBatchUser" resultMap="userResult" parameterType="java.util.List">
+   select 
+    id,user_name,pwd,phone,role,channel,tsp  
+   from act_user  
+   where id in 
+   <foreach collection="ids" item="uid" index="index"
+            open="(" close=")" separator=",">
+            #{uid}
+   </foreach>
+  
+   <if test="userName!=null">
+   	and user_name like concat(concat('%',#{userName}),'%')
+   </if>
+   <if test="desc!=null and asc==null">
+   	order by tsp desc
+   </if>
+   <if test="asc!=null and desc == null">
+   	order by tsp asc
+   </if>
+   <if test="start>0 and end>0">
+   	limit #{start},#{end}
+   </if>     
+  </select>
+  
+  <select id="getUserById" resultMap="userResult" parameterType="java.util.Map">
+  	select id,user_name,pwd,phone,role,tsp   from act_user where id=#{id}
+  </select>
+  
+  <select id="isExistsByParam" resultType="java.lang.Integer" parameterType="java.lang.String">
+  	select count(1) from act_user 
+  	where 1=1
+  	<if test="phone!=null">
+  			and phone=#{phone}
+  	</if>
+  
+  </select>
+  
+  
+  
+  <insert id="inserUser"  parameterType="com.tv.entity.ActUser" useGeneratedKeys="true" keyProperty="id">
+   insert into act_user(id,user_name,pwd,phone,role,channel,tsp)
+   values(#{id},#{userName},#{pwd},#{phone},#{role},#{channel},#{tsp})
+  </insert>
+  
+  <update id="updateUser" parameterType="com.tv.entity.ActUser">
+    update act_user set
+     <if test="userName!=null">
+    	user_name=#{userName},
+    </if>
+    <if test="pwd!=null">
+    	pwd=#{pwd},
+    </if>
+    <if test="role!=null">
+    	role=#{role},
+    </if>
+   
+    tsp=#{tsp}
+    where id=#{id}
+  </update>
+  
+  <delete id="deleteUserById" parameterType="java.lang.Integer">
+  	delete from act_user where id = #{id}
+  </delete>
+</mapper>

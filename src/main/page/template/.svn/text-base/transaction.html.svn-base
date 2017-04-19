@@ -1,0 +1,78 @@
+<div class="transaction box">
+    <div class="mainBody-title">{{name}}</div>
+    <div class="mainBody-content">
+    	
+    	<div class="transaction-title">
+    		我与{{t1}}账单
+    		<a href="javascript:void(0)" ng-click="togglejn()" ng-show="{{myType}}">我与{{t2}}账单</a>
+    	</div>
+    	
+        <div class="search-customer mt30">
+        	<div class="search-customer-group">
+				<label class="text-right">客户姓名</label>
+				<div class="search-customer-content">
+					<div class="customersearchbox" search-customer customer="searchbox" searchtype="my"></div>
+				</div>
+			</div>
+			<div ng-class="{'search-customer-phone':true,'ml20':true,'hidden':!searchbox.mobile}">
+				手机号：
+				<span class="phone">{{searchbox.mobile}}</span>
+			</div>
+			<div ng-class="{'search-customer-phone':true,'ml20':true,'hidden':!(searchbox.realName === null && searchbox.mobile === null)}">
+				<span class="pColorff4949">数据库中查不到该用户！！</span>
+			</div>
+			<div class="search-customer-btn">
+				<input type="button" class="btn prm-fl templatebtn bl-width" value="查询" ng-click="searchClick()" />
+			</div>
+        </div>
+        
+        
+        <div class="pre-table table-public">
+        	<table class="table">
+        		<thead>
+        			<tr>
+        				<th>序列号</th>
+        				<th>时间</th>
+        				<th>客户姓名</th>
+        				<th>联系手机号</th>
+        				<th>预付金额</th>
+        				<th>购买金额</th>
+        				<th>购买折让金额</th>
+        				<th>退款金额</th>
+        				<th>退款折让金额</th>
+        				<th>剩余金额</th>
+        			</tr>
+        		</thead>
+        		<tbody>
+        			<tr ng-repeat="tr in table.table">
+        				<td>{{$index+1}}</td>
+        				<td>{{toData(tr.tsp)}}</td>
+        				<td>{{tr.userName}}</td>
+        				<td>{{tr.mobile}}</td>
+        				<td>{{tr.preAmount}}</td>
+        				<td>{{tr.buyAmount}}</td>
+        				<td class="bgColorf4">{{tr.buyGiveAmount}}</td>
+        				<td>{{tr.reFundAmount}}</td>
+        				<td class="bgColorf4">{{tr.reFundGiveAmount}}</td>
+        				<td>{{tr.left}}</td>
+        			</tr>
+        		</tbody>
+        	</table>
+        	<div class="table-public-paging">
+        		<div class="paging-btn">
+        			<a href="javascript:void(0)" ng-click="table.firstpage()">首页</a>
+        			<a href="javascript:void(0)" ng-click="table.prepage()">上一页</a>
+        			<a href="javascript:void(0)" ng-click="table.nextpage()">下一页</a>
+        			<a href="javascript:void(0)" ng-click="table.lastpage()">尾页</a>
+        		</div>
+        	</div>
+        </div>
+        <div class="btn-group-height">
+            <div class="templatebtn-position">
+            	<a ng-href="{{ExcelUrl}}">
+            		<input type="button" class="btn templatebtn plr10" value="导出 Excel"/>
+               </a>
+            </div>
+        </div>
+    </div>
+</div>

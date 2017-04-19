@@ -1,0 +1,119 @@
+<div class="refund box">
+    <div class="mainBody-title">{{refund.name}}</div>
+    <div class="mainBody-content">
+        <div class="search-customer">
+        	<div class="search-customer-group">
+                <label class="text-right">客户姓名</label>
+                <div class="search-customer-content">
+                	<div class="customersearchbox" search-customer customer="searchbox" searchtype="my"></div>
+                </div>
+            </div>
+            
+            <div ng-class="{'search-customer-phone':true,'ml20':true,'hidden':!searchbox.mobile}">
+				手机号：
+				<span class="phone">{{searchbox.mobile}}</span>
+			</div>
+            <div ng-class="{'search-customer-phone':true,'ml20':true,'hidden':!(searchbox.realName === null && searchbox.mobile === null)}">
+				<span class="pColorff4949">数据库中查不到该用户！！</span>
+			</div>
+            <div class="search-customer-btn">
+				<input type="button" class="btn prm-fl templatebtn bl-width" value="查询" ng-click="searchClick()" />
+			</div>
+        </div>
+        
+        <div class="pre-table table-public">
+        	<table class="table">
+        		<thead>
+        			<tr>
+        				<th>序列号</th>
+        				<th>时间</th>
+        				<th>客户姓名</th>
+        				<th>联系手机号</th>
+        				<th>退款金额</th>
+        				<th>退款折让金额</th>
+        				<th>剩余金额</th>
+        				<th colspan="2">操作</th>
+        			</tr>
+        		</thead>
+        		<tbody>
+        			<tr ng-repeat="tr in table.table">
+        				<td>{{$index+1}}</td>
+        				<td>{{toData(tr.tsp)}}</td>
+        				<td>{{tr.userName}}</td>
+        				<td>{{tr.mobile}}</td>
+        				<td>{{tr.amount}}</td>
+        				<td>{{tr.reFundGiveAmount}}</td>
+        				<td>{{tr.left}}</td>
+        				<td><a href="javascript:void(0)" ng-class="tr.modifiedAble?'table-update-color':'table-unClick-color'" ng-click="tr.modifiedAble?refund.showAlert(0,tr):return;">修改</a></td>
+        				<td><a href="javascript:void(0)" ng-class="tr.modifiedAble?'table-del-color':'table-unClick-color'" ng-click="tr.modifiedAble?refund.delitem(tr):return;">删除</a></td>
+        			</tr>
+        		</tbody>
+        	</table>
+        	<div class="table-public-paging">
+        		<div class="paging-btn">
+        			<a href="javascript:void(0)" ng-click="table.firstpage()">首页</a>
+        			<a href="javascript:void(0)" ng-click="table.prepage()">上一页</a>
+        			<a href="javascript:void(0)" ng-click="table.nextpage()">下一页</a>
+        			<a href="javascript:void(0)" ng-click="table.lastpage()">尾页</a>
+        		</div>
+        	</div>
+        	<p class="table-public-tips">温馨提示：在新增信息24小时内有修改机会，如果超过24小时不能修改！<span class="tips-icon"></span></p>
+        </div>
+        
+        <div class="btn-group-height">
+            <div class="templatebtn-position">
+                <input type="button" class="btn templatebtn plr10" value="新增退款记录" ng-click="refund.showAlert(1)"/>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="prm-zhezhao" ng-class="{'show':!refund.hidden}"></div>
+<div id="prmAlert005" ng-class="{'prmAlert':true,'hidden':refund.hidden}">
+	<div class="hd">
+		<h4>{{prmAlertTitle}}</h4>
+		<span class="close" ng-click="refund.closeRefund()">×</span>
+	</div>
+	<div class="box">
+		<form class="prm-form foundPwd-form wd600" name="refundForm">
+			<div class="foundPwdPop advancePop addrefundfrom">
+				<div ng-class="{'prm-form-group':true,'success': table.type==1 && alert.mobile === null}">
+					<label class="form-group-label text-right">客户姓名：</label>
+					<div class="form-group-content">
+						<div class="customersearchbox" search-customer customer="alert" searchtype="my"></div>
+					</div>
+					<div class="inputstatue"><input type="button" class="btn templatebtn addcusromerbtn" value="添加用户" ng-click="gotoAddCustomer();" /></div>
+				</div>
+				
+				<!-- 显示手机号码 -->
+				<div class="prm-form-group">
+					<div class="form-group-content">
+						<div ng-class="{'showMobile':true,'sMsuccess':true,'show':alert.mobile}">
+							<span>手机号码：</span>{{alert.mobile}}
+							<p class="pColorff4949">*请确认手机号，小心重名重姓</p>
+						</div>
+					</div>
+				</div>
+				
+				<div ng-class='{"prm-form-group":true,"success":refund.isOk}'>
+					<label class="form-group-label text-right" for="amount">申请退款金额（元）：</label>
+					<div class="form-group-content">
+						<input class="prm-form-control" type="number" id="amount" name="amount" ng-maxlength="7" placeholder="{{refundT}}" ng-model="refund.amount" ng-change="showTwoW()" required>
+						<p style="font-size: 12px;margin-top:0px">您当前余额:<span class="pColorff4949">{{interestCount}}</span>元</p>	
+					</div>
+					
+					
+					<div class="refund-money" style="display: block;">
+						<p>退款折让金额：<span class="pColorff4949">{{discountJe}}</span>元</p>
+						<p>总共退款金额：<span class="pColorff4949">{{sumJe}}</span>元</p>
+					</div>
+				</div>
+			</div>
+			<div style="display: none;">{{alert.mobile}}</div>
+			<div class="fd">
+				<input type="button" href="javascript:;" class="btn btn-confirm" value="提交" ng-click="refund.submit()" ng-disabled="((!refundForm.$valid || !!refund.isOk || !alert.mobile) && !nimabi)"/>
+				<input type="button" href="javascript:;" class="btn btn-cancel" value="取消" ng-click="refund.closeRefund()">
+			</div>
+		</form>
+	</div>
+</div>

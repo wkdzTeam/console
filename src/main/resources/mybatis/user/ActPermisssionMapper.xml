@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tv.mapper.ActPermisssionMapper" >
+  <resultMap id="PermissionMap" type="com.tv.entity.ActPermission" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="tsp" property="tsp" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Per_Column_List" >
+    id, name,  url, code, tsp
+  </sql>
+  <select id="findOwnPermission" resultMap="PermissionMap" parameterType="java.util.Map" >
+    SELECT 
+	  <include refid="Per_Column_List" /> 
+	FROM act_permission 
+	<if test="id != null">
+	<where>
+	id IN 
+	  (SELECT perf_id FROM act_perf_role WHERE role_id IN 
+	    (SELECT role_id FROM act_user WHERE id = #{id})) 
+	</where>
+	</if>
+	<if test="page != null">
+	LIMIT #{page}, #{rows} ;
+	</if>
+  </select>
+  
+  <select id="getPermissionCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+  SELECT COUNT(id) FROM act_permission
+  </select>
+  
+  <select id="findOwnMenus" resultMap="PermissionMap" parameterType="java.lang.Integer" >
+    SELECT 
+	  <include refid="Per_Column_List" /> 
+	FROM act_permission
+	<if test="_parameter!=null">
+	 <where>
+	id IN 
+	  (SELECT pid FROM act_perf_role WHERE role_id IN 
+	    (SELECT role_id FROM sys_user WHERE id = #{_parameter})) AND (type = 1 OR type = 2)
+	</where> 
+	</if>
+  </select>
+  
+  <delete id="deletePermission" parameterType="java.lang.Integer" >
+    delete from act_permission
+    where id = #{id}
+  </delete>
+  
+  <insert id="insertPermission" parameterType="com.tv.entity.ActPermission" useGeneratedKeys="true" keyProperty="id">
+    insert into act_permission (id, name, type, 
+      url, parent_id, tsp, 
+      permission_code)
+    values (#{id}, #{name}, #{type}, 
+      #{url}, #{parentId}, #{tsp}, 
+      #{permissionCode})
+  </insert>
+  
+  <update id="updatePermission" parameterType="com.tv.entity.ActPermission" >
+    update act_permission
+    set name = #{name},
+      url = #{url},
+      code = #{code},
+      tsp = #{tsp},
+      permission_code = #{permissionCode}
+    where id = #{id}
+  </update>
+  
+   <insert id="insertBatchPermRole"  parameterType="java.util.List">
+   insert into act_perf_role (id, perf_id, role_id, tsp)
+   values  
+   <foreach collection="list" item="item" index="index" separator=",">
+   	(#{item.id}, #{item.perfId}, #{item.roleId}, #{item.tsp})
+   </foreach>
+  </insert>
+  
+  <select id="findPermissionByRoleId" parameterType="java.lang.Integer" resultMap="PermissionMap">
+  	SELECT * FROM act_permission p LEFT JOIN act_perf_role prr ON p.id = prr.perf_id WHERE prr.role_id=#{roleId}
+  </select>
+  
+  <select id="findPermissionById" parameterType="java.lang.Integer" resultMap="PermissionMap">
+  	SELECT * FROM act_permission WHERE id=#{id}
+  </select>
+  
+  <delete id="deleteRolePerm" parameterType="java.lang.Integer">
+  	delete from act_perf_role where role_id = #{roleId}
+  </delete>
+</mapper>

@@ -1,0 +1,142 @@
+<!doctype html>
+<html id="ng-app" ng-app="prmView" xmlns:ng="http://angularjs.org">
+<head>
+    <meta charset="UTF-8">
+    <title>PRM-登录</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/prm.css">
+    <script src="js/requirejs/require.js"></script>
+    <script>
+        require.config({
+            baseUrl: "../page/",
+            paths: {
+                "alert": "tools/alert/alert",
+                "global": "tools/global/global",
+                "common": "js/common.js"
+            }
+        });
+    </script>
+    <script src="js/angular/angular.js"></script>
+    <script src="js/angular/angularMD5.js"></script>
+    <script src="js/JSON-js-master/json2.js"></script>
+    <script src="js/requirejs/require.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/login.js"></script>
+    <!--[if lte IE 8]>
+    <script>
+        document.createElement('ng-include');
+        document.createElement('ng-pluralize');
+        document.createElement('ng-view');
+
+
+        // Optionally these for CSS
+        document.createElement('ng:include');
+        document.createElement('ng:pluralize');
+        document.createElement('ng:view');
+    </script>
+    <![endif]-->
+</head>
+<body class="login">
+    <div class="wrapper">
+        <div class="top">
+            <h1 class="page-title">农资预售管理系统</h1>
+        </div>
+        <div class="main main-bg1">
+            <div class="login-box border-box">
+                <h2 class="login-box-title">登录</h2>
+                <form class="prm-form login-form" ng-controller="formPost" name="loginForm" novalidate>
+                    <div ng-init="a=true" ng-class="{'prm-form-group':a,danger: loginForm.inputEmail.$dirty && loginForm.inputEmail.$error.required}">
+                        <label class="form-group-label text-right" for="inputEmail"><i class="prm-icon icon-user"></i></label>
+                        <div class="form-group-content">
+                            <input class="prm-form-control" type="text" id="inputEmail" name="inputEmail" placeholder="请输入账号" ng-model="inputEmail" required>
+                        </div>
+                        <div class="inputstatue">
+							<span>请输入用户名</span>
+                    	</div>
+                    </div>
+                    
+                    <div ng-init="a=true" ng-class="{'prm-form-group':a,danger: loginForm.inputPassword.$dirty && loginForm.inputPassword.$error.required}">
+                        <label class="form-group-label text-right" for="inputPassword"><i class="prm-icon icon-password"></i></label>
+                        <div class="form-group-content">
+                            <input class="prm-form-control" type="password" id="inputPassword" name="inputPassword" placeholder="请输入密码" ng-model="inputPassword" required>
+                        </div>
+                        <div class="inputstatue">
+							<span>请输入密码</span>
+                    	</div>
+                    </div>
+                    
+                    <div class="prm-form-group {{iscodesuccess}}">
+                        <div class="form-group-content clearfix">
+                            <input class="codeinput prm-fl" type="text" id="code" name="code" placeholder="请输入验证码" ng-model="code" ng-change="checkcode()" my-enter="login()" required>
+                            <img id="codeimg" class="codeimg" src="/prm/login/getVerifiyCode" alt="验证码" ng-click="changecodeimg()">
+                        </div>
+                        <div class="inputstatue">
+							<span></span>
+                    	</div>
+                    </div>
+                    
+                    <div class="prm-form-group">
+                        <div class="form-group-content">
+                            <input type="button" class="prm-form-control btn btn-default" ng-click="login()" ng-disabled="!loginForm.$valid" value="立即登录" />
+                        </div>
+                    </div>
+                    <div class="prm-form-group">
+                        <div class="form-group-content text-center">
+                            <a href="javascript:void(0);" class="forgetPassword" ng-click="forgetPwd()">忘记密码？</a>
+                            <a href="register.html" ng-class="{'register':true,'hidden':!showregister}">立即注册</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    <div id="prm-zhezhao" style="display: none;"></div>
+    <div id="prmAlert001" class="prmAlert" style="display: none; z-index: 1005;">
+        <div class="hd text-center">
+            <h4>找回密码</h4>
+        </div>
+        <div class="box">
+            <form class="prm-form foundPwd-form" ng-controller="foundPwd" name="foundPwdForm" novalidate>
+                <div class="foundPwdPop">
+                    <div ng-init="a=true" ng-class="{'prm-form-group':a, danger: foundPwdForm.mobile.$dirty && !foundPwdForm.mobile.$error.minlength && !foundPwdForm.mobile.$valid, success:foundPwdForm.mobile.$valid}">
+                        <label class="form-group-label text-right" for="mobile">手机号码：</label>
+                        <div class="form-group-content">
+                            <input class="prm-form-control" type="text" id="mobile" name="mobile" ng-minlength="11" ng-maxlength="11" placeholder="请输入手机号码" ng-model="mobile" mobile-number required>
+                        </div>
+                        <div class="inputstatue"><span>手机格式不正确</span></div>
+                    </div>
+
+                    <div class="prm-form-group">
+                        <label class="form-group-label text-right" for="phoneCode">验证码：</label>
+                        <div class="form-group-content clearfix">
+                            <input class="codeinput prm-fl" type="text" id="phoneCode" name="phoneCode" placeholder="输入手机短信验证码" ng-model="phoneCode" required>
+                            <input type="button" class="codeimg btn" id="codeBtn" ng-click="getCode()" value="{{getcodebtntext}}" ng-disabled="!foundPwdForm.mobile.$valid">
+                        </div>
+                        <div class="inputstatue"><span>请输入验证码</span></div>
+                    </div>
+
+                    <div class="prm-form-group">
+                        <label class="form-group-label text-right" for="newPwd1">输入密码：</label>
+                        <div class="form-group-content">
+                            <input class="prm-form-control" type="password" id="newPwd1" name="newPwd1" placeholder="设置登录密码" ng-model="newPwd1" required>
+                        </div>
+                        <div class="inputstatue"><span>请输入密码</span></div>
+                    </div>
+
+                    <div ng-init="a=true" ng-class="{'prm-form-group':a,danger: foundPwdForm.newPwd2.$dirty && newPwd1 != newPwd2 && newPwd1.length <= newPwd2.length, success:foundPwdForm.newPwd2.$dirty && newPwd1 == newPwd2}">
+                        <label class="form-group-label text-right" for="newPwd2">确认密码：</label>
+                        <div class="form-group-content">
+                            <input class="prm-form-control" type="password" id="newPwd2" name="newPwd2" placeholder="重新输入密码" ng-model="newPwd2" ng-change="pwdchange()" required>
+                        </div>
+                        <div class="inputstatue"><span>两次输入的密码不一致</span></div>
+                    </div>
+                </div>
+                <div class="fd">
+                    <input type="button" href="javascript:;" class="btn btn-confirm" value="修改" ng-disabled="!foundPwdForm.$valid" ng-click="changePwd()" />
+                    <input type="button" href="javascript:;" class="btn btn-cancel" value="取消" ng-click="giveup()">
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

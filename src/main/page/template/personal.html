@@ -1,0 +1,192 @@
+<div class="personal box">
+    <div class="mainBody-title">{{name}}</div>
+    <div class="mainBody-content">
+       	<div ng-class="{'personal-amount farmers':true, 'hidden': userInfo.type==4}">
+       		<p class="title">与客户的总账金额</p>
+       		<ul>
+       			<li>
+       				<div class="amount-money">
+       					<span>{{farmer.total || 0}}</span>元
+       					<p>预付款总金额</p>
+       				</div>
+       				<div class="accountIcon yu-money"></div>
+       			</li>
+       			<li>
+       				<div class="amount-money">
+       					<span>{{farmer.sold || 0}}</span>元
+       					<p>已经出售农资金额</p>
+       				</div>
+       				<div class="accountIcon sell-money"></div>
+       			</li>
+       			<li>
+       				<div class="amount-money">
+       					<span>{{farmer.surplus || 0}}</span>元
+       					<p>剩余农资金额</p>
+       				</div>
+       				<div class="accountIcon sy-money"></div>
+       			</li>
+       			<li class="borderRn">
+       				<div class="amount-money">
+       					<span>{{farmer.retreat || 0}}</span>元
+       					<p>已退款金额</p>
+       				</div>
+       				<div class="accountIcon tk-money"></div>
+       			</li>
+       		</ul>
+       	</div>
+       	
+       	<div ng-class="{'personal-amount':true,'dealer':true,'hidden':userInfo.type==1}">
+       		<p class="title">与经销商的总账金额</p>
+       		<ul>
+       			<li>
+       				<div class="amount-money">
+       					<span>{{distributor.total || 0}}</span>元
+       					<p>预付款总金额<i class="tanhao redT"></i></p>
+       				</div>
+       			</li>
+       			<li>
+       				<div class="amount-money">
+       					<span>{{distributor.soldTotal || 0}}</span>元
+       					<p>采购金额</p>
+       				</div>
+       			</li>
+       			<li>
+       				<div class="amount-money">
+       					<span>{{distributor.soldDiscount || 0}}</span>元
+       					<p>采购折让金额</p>
+       				</div>
+       			</li>
+       			<li class="borderRn">
+       				<div class="amount-money">
+       					<span>{{distributor.surplusTotal || 0}}</span>元
+       					<p>退款金额</p>
+       				</div>
+       			</li>
+       			<li class="borderRn">
+       				<div class="amount-money">
+       					<span>{{distributor.surplusDiscount || 0}}</span>元
+       					<p>退款折让金额</p>
+       				</div>
+       			</li>
+       			<li class="borderRn">
+       				<div class="amount-money">
+       					<span>{{distributor.retreat || 0}}</span>元
+       					<p>剩余金额</p>
+       				</div>
+       			</li>
+       		</ul>
+       	</div>
+       	
+       	<div class="parsonalInfo">
+       		<div class="parsonalInfoArea">
+       			<div class="lable-prompt">
+	       			<span class="grayLable">登录账号：</span>
+	       			<span>{{userInfo.name}}</span>
+	       		</div>
+	       		<div class="lable-prompt">
+	       			<span class="grayLable">真实姓名：</span>
+	       			<span>{{userInfo.realName}}</span>
+	       		</div>
+	       		<div class="lable-prompt">
+	       			<span class="grayLable">手&nbsp;机&nbsp;号：</span>
+	       			<span>{{userInfo.mobile}}</span>
+	       		</div>
+	       		<div class="lable-prompt">
+	       			<span class="grayLable">身&nbsp;份&nbsp;证：</span>
+	       			<span>{{userInfo.personID}}</span>
+	       		</div>
+	       		<div class="prm-form-group btn-group-height">
+	                <div class="register-form parsonal-form">
+	                    <input type="button" class="btn prm-fl confirmbtn bl-width" value="修改个人信息" ng-click="User.modifyInfoBtn()" />
+	                    <input type="button" class="prm-form-control btn canclebtn br-width" value="修改密码" ng-click="Pwd.modifyPwd()" />
+	                </div>
+	            </div>
+            </div>
+       	</div>
+       	
+    </div>
+</div>
+
+<div id="prm-zhezhao" ng-class="{show:!Pwd.hidden || !User.hidden }"></div>
+<div id="prmAlert001" ng-class="{'prmAlert':true,'hidden':Pwd.hidden}">
+	<div class="hd">
+		<h4>找回密码</h4>
+		<span class="close" ng-click="Pwd.closePwd()">×</span>
+	</div>
+	<div class="box">
+		<form class="prm-form foundPwd-form">
+			<div class="personal-form">
+
+				<div class="prm-form-group">
+					<label class="form-group-label text-right" for="oldPwd">原密码：</label>
+					<div class="form-group-content">
+						<input class="prm-form-control" type="password" id="oldPwd" name="oldPwd" placeholder="输入原登录密码" ng-model="Pwd.oldPwd">
+					</div>
+				</div>
+
+				<div class="prm-form-group">
+					<label class="form-group-label text-right" for="newPwd1">新密码：</label>
+					<div class="form-group-content">
+						<input class="prm-form-control" type="password" id="newPwd1" name="newPwd1" placeholder="设置登录密码" ng-model="Pwd.newPwd1">
+					</div>
+				</div>
+
+				<div class="prm-form-group">
+					<label class="form-group-label text-right" for="newPwd2">确认密码：</label>
+					<div class="form-group-content">
+						<input class="prm-form-control" type="password" id="newPwd2" name="newPwd2" placeholder="重新输入密码" ng-model="Pwd.newPwd2">
+					</div>
+					<div class="inputstatue"><span>两次输入的密码不一致</span></div>
+				</div>
+			</div>
+			<div class="fd">
+				<input type="button" href="javascript:;" class="btn btn-confirm" value="修改" ng-click="Pwd.newPwdUp()" ng-disabled="!(Pwd.oldPwd.length && Pwd.newPwd1.length && Pwd.newPwd2.length)"/>
+				<input type="button" href="javascript:;" class="btn btn-cancel" ng-click="Pwd.closePwd()" value="取消">
+			</div>
+		</form>
+	</div>
+</div>
+<div id="prmAlert002" ng-class="{'prmAlert':true,'hidden':User.hidden}">
+	<div class="hd">
+		<h4>用户信息</h4>
+		<span class="close" ng-click="User.closeInfoBtn()">×</span>
+	</div>
+	<div class="box">
+		<form class="prm-form foundPwd-form" name="updataloginname" novalidate>
+			<div ng-class="{'personal-form':true}">
+				<div class="prm-form-group">
+					<label class="form-group-label text-right" for="username">登录账号：</label>
+					<div class="form-group-content">
+						<input class="prm-form-control" type="text" id="username" name="username"  placeholder="请输入个人姓名" ng-model="User.username" nousername required>
+					</div>
+					<!--<div ng-class="{inputstatue:true,hide:!updataloginname.username.$error.nousername}"><span>账号名称已被注册！</span></div>-->
+					<!-- ,danger:(updataloginname.username.$error.nousername  == true) && isDangername -->
+				</div>
+			</div>
+			
+			<div ng-class="{'personal-form':true}">
+				<div class="prm-form-group">
+					<label class="form-group-label text-right" for="mobile">手机号码：</label>
+					<div class="form-group-content">
+						<input class="prm-form-control" type="text" id="mobile" name="mobile" placeholder="请输入手机号码" ng-model="User.mobile" ng-readonly="isread">
+					</div>
+
+				</div>
+			</div>
+			
+			<div ng-class="{'personal-form':true}">
+				<div class="prm-form-group">
+					<label class="form-group-label text-right" for="personID">身份证：</label>
+					<div class="form-group-content">
+						<input class="prm-form-control" type="text" id="personID" name="personID" placeholder="请输入身份证" ng-model="User.personID" ng-readonly="isread">
+					</div>
+					<!--<div class="inputstatue"><span>身份证格式不正确</span></div>-->
+				</div>
+			</div>
+			<div class="fd">
+				<input type="button" href="javascript:;" class="btn btn-confirm" value="修改" ng-click="User.userInfoUp()" ng-disabled="(updataloginname.username.$error.nousername && updataloginname.username.$dirty)"/>
+				<input type="button" href="javascript:;" class="btn btn-cancel" value="取消" ng-click="User.closeInfoBtn()">
+			</div>
+		</form>
+	</div>
+</div>

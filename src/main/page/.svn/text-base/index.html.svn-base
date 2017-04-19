@@ -1,0 +1,66 @@
+<!doctype html>
+<html id="ng-app" ng-app="prmView" xmlns:ng="http://angularjs.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>PRM</title>
+    <link rel="stylesheet" href="css/prm.css">
+    <script src="js/requirejs/require.js"></script>
+    <script>
+        require.config({
+            baseUrl: "../page/",
+            paths: {
+                "alert": "tools/alert/alert",
+                "global": "tools/global/global",
+                "common":  "js/commom.js"
+            }
+        });
+    </script>
+    <script src="js/angular/angular.js"></script>
+    <script src="js/angular/angularMD5.js"></script>
+    <script src="js/underscore/underscore-min.js"></script>
+    <script src="js/JSON-js-master/json2.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/controller/advancePayment.js"></script>
+    <script src="js/controller/personal.js"></script>
+    <script src="js/controller/sale.js"></script>
+    <script src="js/controller/customer.js"></script>
+    <script src="js/controller/refund.js"></script>
+    <script src="js/controller/transaction.js"></script>
+    <!--[if lte IE 8]>
+    <script>
+        document.createElement('ng-include');
+        document.createElement('ng-pluralize');
+        document.createElement('ng-view');
+
+
+        // Optionally these for CSS
+        document.createElement('ng:include');
+        document.createElement('ng:pluralize');
+        document.createElement('ng:view');
+    </script>
+    <![endif]-->
+</head>
+<body class="index">
+    <div class="wrapper">
+        <div class="top">
+            <div class="center">
+                <h1 class="page-title">农资预售管理系统</h1>
+                <ul class="toolBar" ng-controller="toolBar">
+                    <li><a href="javascript:void(0);" ng-click="loginOut()">退出</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="main">
+            <div class="center">
+                <div class="mainNav-box">
+                    <ul class="mainNav" ng-controller="mainNav">
+                        <li ng-repeat="nav in navurl" ng-click="liclick($index)" ng-class="nav.className"><a href="index.html#/{{nav.url}}"><span class="icon-box"><i class="prm-icon icon-nav{{$index}}"></i></span>{{nav.name}}</a></li>
+                    </ul>
+                </div>
+                <div class="mainBody-box" ng-view></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

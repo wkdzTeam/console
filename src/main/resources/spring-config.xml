@@ -13,7 +13,7 @@
     <context:property-placeholder location="classpath:jdbc.properties"/>
 	
     <!-- 扫描注解Bean 排除controller对事物的影响 -->
-    <context:component-scan base-package="com.tv.service">
+    <context:component-scan base-package="com.console.service">
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
 
